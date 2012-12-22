@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block Title %}Infinity Creation Platform{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="{{ STATIC_URL }}/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+	.visible_for_ips {
+	display: none;
+	}
+    </style>
+    <link href="{{ STATIC_URL }}/stylesheets/bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="{{ STATIC_URL }}/javascripts/html5.js"></script>
+    <![endif]-->
+   <script src="{{ STATIC_URL }}/javascripts/jquery-1.7.2.min.js"></script>
+	{% block headcontent %}{% endblock %}
+
+  </head>
+
+  <body>
+<!-- start search -->
+
+<script type="text/javascript">
+
+var my_host = window.location.protocol+'//'+window.location.host;
+var count_cl = 5;
+
+var updateInnerHeader = function(txt) {		
+
+			$('.header_content').html(txt);
+
+}
+
+var formatContent = function(txt) {
+  txt = txt.replace(/\n/g,"<br \/>");
+  return txt;
+};
+
+var updateContent = function(txt) {
+
+			
+      txt = formatContent(txt);
+			$('.innercontent').html(txt);
+
+
+};
+
+var waitContent = function() {
+
+		updateContent("<img src=\"/static/images/wait_mini.gif\">");
+
+};
+
+var clearContent = function() {
+
+		updateContent("");
+
+};
+
+var convertText = function(txttc) {
+
+	if (txttc) {
+		txttc = txttc.replace(/\n/g,"<br \/>");
+	}
+
+	return txttc
+
+};
+
+var navjsonajax = function (url) {
+
+      navjsonajaxupdatecontent(url,0)
+};
+
+var navjsonajaxmodal = function (url) {
+
+      navjsonajaxupdatecontent(url,1)
+};
+
+var navjsonajaxupdatecontent = function (url,type) {
+
+    if (type==0) { waitContent(); }
+
+		$.getJSON(my_host+url, function(data) {
+				
+						if (data) {
+						  if (type==1) { createinfinitymodal(data.data); }
+						  else {  updateContent(data.data); }
+        
+						}
+		});
+
+
+};
+
+var hidebasedonfunc = function(funct) {
+
+	$('.vessel_hide').hide();
+	$('.vessel_'+funct).show();
+
+};
+
+var createinfinitymodal =  function(txt) { 
+  txt = formatContent(txt);
+  cl_modal = $('#modal_infinity').clone();
+  count_cl+=1;
+ 
+  xname = 'modal_infinity_'+count_cl;
+  xname_label = xname+'_Label';
+
+  cl_modal.attr('aria-labelledby',xname_label);
+  cl_modal.attr('id',xname);
+  cl_modal.find('#modal_infinity_Label').html('Result');
+  cl_modal.find('#modal_infinity_Label').attr('id',xname_label);
+  cl_modal.find('.infinity_modal_content').html(txt);
+ 
+  
+  cl_modal.appendTo('.infinity_modals');
+  $('#'+xname).modal('show')
+};
+
+$(document).ready(function() {
+
+	$('.nav-list').click(function(x){
+		updateInnerHeader($(this).find("li.active a").html());
+		updateContent("");
+	});
+	
+	$('.nav-list').click(function(){
+		$('.hideforsearch').show();
+	});
+
+	$(".searchwordbuton").click(function(event) {
+
+	  
+	     event.preventDefault();
+	  
+		var sk = $(".searchword").val();
+		
+		if (sk) {
+			$('.hideforsearch').hide();
+			waitContent();
+			updateInnerHeader("Search");
+			$.getJSON(my_host+'/search?key='+sk, function(data) {
+				
+							if (data) {						
+								updateInnerHeader("Search Results");
+								updateContent(data.data);
+							
+
+							}
+			});
+
+		}
+
+
+	});
+
+
+
+var my_pathname = window.location.pathname;
+
+if (my_pathname=="/production") {
+
+	$(".nav-header-top-menu li").removeClass("active");
+	$('.productioncontainer').addClass("active");
+}
+
+else {
+	$(".nav-header-top-menu li").removeClass("active");
+	$('.creationcontainer').addClass("active");
+
+}
+
+$(".nav-header-middle-menu a").click(function(xxx){
+$(".nav-header-middle-menu li").removeClass("active");
+	$(this).parent().addClass("active");
+	
+
+});
+
+
+
+
+});
+</script>
+<!-- end search -->
+
+    <div class="navbar navbar-fixed-top" >
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Infinity</a>
+          <div class="nav-collapse">
+            <ul class="nav nav-header-top-menu">
+              <li class="creationcontainer"><a href="/creation">Creation</a></li>
+              <li class="productioncontainer"><a href="/production">Production</a></li>
+		<li>
+		<input type="text"  name="searchword" class="searchword" value="" />
+		<button  class="btn  btn-primary searchwordbuton">search</button>
+		</li>
+              
+            </ul>
+          </div><!--/.nav-collapse -->
+  
+     </div>
+      </div>
+    </div>
+
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+<!-- span 3-->
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list nav-header-middle-menu">
+                  	{% block cmenu %}{% endblock %}
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+<!-- span 3-->
+
+        <div class="span9">
+
+          <div class="hero-unit" style="background-color:#33CCFF;">
+<!--
+	  <div class="inlineform"> </div>
+-->
+	<div class="hideforsearch">
+	{% block content %}Content to be replaced.{% endblock %}
+	</div>
+
+	<div class="innercontent"></div>
+          </div>
+
+<!--
+          <div class="row-fluid">
+                           
+          </div>
+
+-->
+
+
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Navarino &dash; Infinity 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+        <!-- infinity Modal -->
+    <div id="modal_infinity" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modal_infinity_Label" aria-hidden="true">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="modal_infinity_Label">Modal header</h3>
+        </div>
+        <div class="modal-body">
+        <p class="infinity_modal_content">One fine body…</p>
+        </div>
+        <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+    </div>
+    
+    <div class="infinity_modals"></div>
+
+    <script src="{{ STATIC_URL }}/javascripts/bootstrap.min.js"></script>
+
+
+  </body>
+</html>
+

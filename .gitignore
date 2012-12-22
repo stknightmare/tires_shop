@@ -1,4 +1,5 @@
 *.log
 *.pot
 *.pyc
+tires_shop/settings.py
 local_settings.py
